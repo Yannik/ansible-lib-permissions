@@ -1,0 +1,16 @@
+---
+- hosts: all
+  roles:
+    - lib_permissions
+  tasks:
+    - permissions:
+        basepath: /home/yannik
+        permissions:
+          - { path: 'dir', recurse: yes, mode: 0750 }
+          - { path: 'dir/secret', recurse: yes, mode: 0700 }
+          - { path: 'dir/secret', mode: 0750 }
+      register: permission_result
+    - shell: rm output || true
+    - shell: echo "{{ item }}" >> output
+      with_items: "{{permission_result.output }}"
+
